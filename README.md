@@ -115,7 +115,7 @@ WHERE quantity > 0
   AND LEFT(UPPER(TRIM(invoice_no)), 1) <> 'C';
 ```
 
-From there, I looked into various items to start, such as:
+From there, I looked into various areas to start, such as:
 - Top 10 products (by sales)
 - Monthly sales performance
 - Best country
@@ -125,24 +125,7 @@ From there, I looked into various items to start, such as:
 - RFM customer segmentation (Recency, Frequency, and Monetary)
 
 Once those questions are answered, SQL can solve more complicated questions, such as:
-```sql
--- Which weekdays and hours generate the most sales?
 
-SELECT
-    EXTRACT(ISODOW FROM invoice_date)::integer AS weekday_number,
-    TO_CHAR(invoice_date, 'Dy') AS weekday,
-    EXTRACT(HOUR FROM invoice_date)::integer AS hour_of_day,
-    COUNT(DISTINCT invoice_no) AS orders,
-    SUM(line_revenue) AS sales_value,
-    SUM(quantity) AS units_sold
-FROM retail_sales
-GROUP BY
-    EXTRACT(ISODOW FROM invoice_date),
-    TO_CHAR(invoice_date, 'Dy'),
-    EXTRACT(HOUR FROM invoice_date)
-ORDER BY weekday_number, hour_of_day;
-```
-and 
 ```sql
 -- Is sales value changing because of order volume, units per order, or average revenue per unit?
 
@@ -176,6 +159,8 @@ SELECT
 FROM monthly
 ORDER BY invoice_month;
 ```
+
+![Sales Value Changes based on variables](https://i.imgur.com/eaJB0hN.png)
 
 A full list of "analysis" queries is inside a single SQL file, as you can query parts of it at a time.
 
