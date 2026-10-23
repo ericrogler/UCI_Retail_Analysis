@@ -3,10 +3,11 @@
 Author: Eric Rogler
 Date: October 22, 2026
 
-As someone who worked in retail before, I figured I'd try my hand at this kind of information.
+As someone who worked in retail for years before, I figured I'd try out this kind of project.
 
 The data comes from the UCI Online Retail dataset. Reference here:
-`Chen, D. (2015). Online Retail [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33.`
+
+```Chen, D. (2015). Online Retail [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33.```
 
 ## Overview
 
