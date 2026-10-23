@@ -303,14 +303,14 @@ ORDER BY weekday_number, hour_of_day;
 
 ## Recommendations
 
-Based on the analysis done by me, here are several actionable items to look into:
+These actionable items are based on the results of this analysis alone:
 - Between the hours of 0700 to 2000, focus on orders occurring between 0900 to 1700. Have staff available to pick up "late" orders as needed between 1700-1900 on the weekdays, especially Thursday.
 - You can move starting time for Sunday up to 1000 instead of 0900.
 - On weekdays, starting time may go to 0800 instead of 0600 or 0700.
 - Create a dedicated space for our most "popular" items customers may easily find within stores, as our top 10 items account for ~10% of all total sales.
 - Majority of revenue comes from customers who are invested, make frequent orders, and spend plenty of money. As this is already a large portion of our current customer base, focus on retention and offer bonuses, discounts, promotions, and rewards for "frequent flyers" to ensure continued business.
 
-These items above may be implemented based on the results of this analysis alone. Further recommendations would require stakeholder and operational input before proceeding with additional plans.
+Further recommendations would require stakeholder and operational input before proceeding with additional plans.
 
 ## Conclusion
 
