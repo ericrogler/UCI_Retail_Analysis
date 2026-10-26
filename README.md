@@ -121,7 +121,9 @@ WHERE quantity > 0
   AND LEFT(UPPER(TRIM(invoice_no)), 1) <> 'C';
 ```
 
-The columns are *explicitly* called out here so SCD (slowly changing data) issues with adding new columns are mitigated in the future.
+For the majority of queries, I'll assume negative quantities, negative (and zero) unit price, and cancelled invoices/orders do not count towards the analysis. They could have many reasons for issues, such as reversals or refunds, credit issues, free items, samples, giveaways, and more.
+
+The columns are also *explicitly* called out here so SCD (slowly changing data) issues with adding new columns are mitigated in the future.
 
 ## SQL / Database Stage
 
