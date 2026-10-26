@@ -73,7 +73,7 @@ There are several reasons why I went with a parquet file for the database:
 1. We're dealing with OLAP and prioritizing handling read-many, write-once scenarios
 2. Open source technology avoiding vendor lock-in should we change tooling in the future.
 3. A surprisingly small file size!
-    - For example, this script converted a 23 MB .xlsx file down into a ~4MB .parquet file! That's around a 75% decrease.
+    - For example, this script converted a 23 MB .xlsx file down into a ~4MB .parquet file! That's around a 75% decrease in storage used.
 
 After converting the file comes importing it into the database. This involves several steps:
 1. Setting up a database with pgAdmin 4
@@ -84,6 +84,44 @@ After converting the file comes importing it into the database. This involves se
 4. Explicitly defining data types of each column going into the database
 
 On "success" it returns the number of rows we imported; a value we can confirm against our data quality check in a previous stage.
+
+
+## What about "Messy" Data?
+
+For this dataset, this includes issues like the following:
+- Missing Customer IDs
+- Missing Descriptions
+- Negative Quantities
+- Zero / Negative Prices
+- "Cancelled order" rows
+
+The first two items, missing customer IDs and missing descriptions, are safe to retain as the transactions still show valid fields in other columns. Customer_ID, however, may not be safe to maintain at a customer-level drilldown compared to an overall view of the dataset.
+
+For the other issues, after importing the data within the database successfully, a SQL query creating a view for other queries to utilize serves as a straightforward solution on data quality issues:
+
+```sql
+-- Reusable view as a base for other queries
+-- Adds revenue by line & month of invoice
+-- Replaces it too in case it's already made
+CREATE OR REPLACE VIEW retail_sales AS
+SELECT
+    invoice_no,
+    stock_code,
+    description,
+    quantity,
+    invoice_date,
+    unit_price,
+    customer_id,
+    country,
+    quantity * unit_price AS line_revenue,
+    DATE_TRUNC('month', invoice_date)::date AS invoice_month
+FROM retail_transactions
+WHERE quantity > 0
+  AND unit_price > 0
+  AND LEFT(UPPER(TRIM(invoice_no)), 1) <> 'C';
+```
+
+The columns are *explicitly* called out here so SCD (slowly changing data) issues with adding new columns are mitigated in the future.
 
 ## SQL / Database Stage
 
@@ -100,21 +138,7 @@ SELECT
 FROM retail_transactions
 ```
 
-I also thought there may've been a table I'll use quite frequently, so I'll establish it as a separate view for CTES, subqueries, and queries. It takes the data I already imported, but adds a revenue value for each line item and explicitly defines the *month* it's billed in an invoice.
-
-```sql
--- Adds revenue by line & month of invoice
--- Replaces it too in case it's already made
-CREATE OR REPLACE VIEW retail_sales AS
-SELECT
-    *,
-    quantity * unit_price AS line_revenue,
-    DATE_TRUNC('month', invoice_date)::date AS invoice_month
-FROM retail_transactions
-WHERE quantity > 0
-  AND unit_price > 0
-  AND LEFT(UPPER(TRIM(invoice_no)), 1) <> 'C';
-```
+I also thought there may've been a table I'll use quite frequently, which is why I made the separate view for CTES, subqueries, and queries earlier. It takes the data I already imported, but adds a revenue value for each line item and explicitly defines the *month* it's billed in an invoice.
 
 From there, I looked into various areas to start, such as:
 - Top 10 products (by sales)
@@ -163,19 +187,21 @@ ORDER BY invoice_month;
 
 ![Sales Value Changes based on variables](https://i.imgur.com/eaJB0hN.png)
 
-A full list of "analysis" queries is inside a single SQL file, as you can query parts of it at a time.
+A full list of "analysis" type queries is inside a single SQL file, as you can query parts of it at a time.
 
 ## Creating Views for Visualization
 
-Views are similar to our analysis queries and *mostly* copy-pasting what we've wrote before. I prioritize making *views* over tables for several reasons:
-1. Ease of use
-2. Can be cached and act as a subset of data for referencing
-3. Security to allow other users to only access the parts of data I'm fine with them accessing.
+Views are similar to our analysis queries and *mostly* copy-pasting what we've wrote before, but making them "business-ready" for other analysts. 
 
-For example, if I want a view for product performance, I take the CTE from my earlier analysis query to find the Top 10 Products and set it up like this:
+I prioritize making *views* over tables for several reasons:
+1. Ease of use
+2. Can be cached and act as a subset of data for referencing later
+3. Security to allow other users to only access the parts of data I'm fine with them accessing
+
+For example, if I want a view for product performance across *all* of my products, I take the CTE from my Top 10 Products analysis query to find the and set it up like this:
 
 ```sql
-CREATE OR REPLACE VIEW product_sales AS -- only part that changes is this line!
+CREATE OR REPLACE VIEW product_sales AS
 SELECT
     stock_code,
     MAX(description) AS description,
@@ -186,11 +212,11 @@ FROM retail_sales
 GROUP BY stock_code;
 ```
 
-And now I have a view where all the products can be visualized and answer many other questions, such as Top 5, top 25, top 50, and top 100 instead of only top 10 like my initial inquiry.
+Now I have a view where all the products can be visualized and answer many other questions, such as top 5, top 25, top 50, and top 100 instead of only top 10 like my initial inquiry.
 
 Some views may need more adjustments, like adding another column or converting nearly the entire query from before into a separate view.
 
-Following a similar process, multiple views are created:
+Following a similar process, multiple views are created for areas such as:
 - Retail Sales (the base used from earlier for queries)
 - Monthly Sales
 - Product Performance
@@ -199,7 +225,7 @@ Following a similar process, multiple views are created:
 - Cancellation Activity by Month
 - Customer Cohort Retention
 
-## Visualizations
+## Visualizations & Presentation
 
 For this part, I'm using PowerBI as my primary tool.
 

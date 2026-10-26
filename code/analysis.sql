@@ -26,7 +26,14 @@ FROM retail_transactions;
 -- Replaces it too in case it's already made
 CREATE OR REPLACE VIEW retail_sales AS
 SELECT
-    *,
+    invoice_no,
+    stock_code,
+    description,
+    quantity,
+    invoice_date,
+    unit_price,
+    customer_id,
+    country,
     quantity * unit_price AS line_revenue,
     DATE_TRUNC('month', invoice_date)::date AS invoice_month
 FROM retail_transactions
