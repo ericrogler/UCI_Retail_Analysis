@@ -18,7 +18,7 @@ Our goal is to answer several questions, including:
 - What are our sales over a given period of time?
 - Can we determine cohorts from our customer base?
 
-To start, rather than import the dataset directly into PowerBI or Tableau, I started with Python to clean and convert the dataset into a parquet file type (you'll see why later!) and stored in a PostgreSQL database. From there, the "cleaned" data is analyzed with SQL and divided across different views better suited for visualization. Finally, dashboards and charts are created to showcase findings and make it easy on the eyes for our would-be readers.
+To start, rather than import the dataset directly into PowerBI or Tableau, I started with Python to clean and convert the dataset into a parquet file type to later store in a PostgreSQL database. From there, the "cleaned" data is analyzed with SQL and divided across different views better suited for visualization. Finally, dashboards and charts are created to showcase findings and make it easy on the eyes for our would-be readers.
 
 This setup scales better rather than direct imports in case future files are too large or cumbersome for rudimentary processing.
 
@@ -73,7 +73,7 @@ There are several reasons why I went with a parquet file for the database:
 1. We're dealing with OLAP and prioritizing handling read-many, write-once scenarios
 2. Open source technology avoiding vendor lock-in should we change tooling in the future.
 3. A surprisingly small file size!
-    - For example, this script converted a 23 MB .xlsx file down into a ~4MB .parquet file! That's around a 75% decrease in storage used.
+    - For example, this script converted a 23 MB .xlsx file down into a ~4MB .parquet file! About a 75% decrease in file size.
 
 After converting the file comes importing it into the database. This involves several steps:
 1. Setting up a database with pgAdmin 4
