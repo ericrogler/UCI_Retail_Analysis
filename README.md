@@ -3,13 +3,14 @@
 Author: Eric Rogler
 Date: October 22, 2026
 
-As someone who worked in retail for years before, I figured I'd try out this kind of project.
+
 
 The data comes from the UCI Online Retail dataset. Reference here:
 
 ```Chen, D. (2015). Online Retail [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33.```
 
-## Overview
+## Summary & Results
+As someone who worked in retail for years before, I figured I'd try out this kind of project.
 
 Our goal is to answer several questions, including:
 - What are customers purchasing?
@@ -18,9 +19,12 @@ Our goal is to answer several questions, including:
 - What are our sales over a given period of time?
 - Can we determine cohorts from our customer base?
 
-To start, rather than import the dataset directly into PowerBI or Tableau, I started with Python to clean and convert the dataset into a parquet file type to later store in a PostgreSQL database. From there, the "cleaned" data is analyzed with SQL and divided across different views better suited for visualization. Finally, dashboards and charts are created to showcase findings and make it easy on the eyes for our would-be readers.
+To start, rather than import the dataset directly into PowerBI or Tableau, I started with Python to clean and convert the dataset into a parquet file type to later store in a PostgreSQL database. From there, the "cleaned" data is analyzed with SQL and divided across different views better suited for visualization. Finally, dashboards and charts are created to showcase findings and make it easy on the eyes for our would-be readers. This setup scales better rather than direct imports in case future files are too large or cumbersome for rudimentary processing.
 
-This setup scales better rather than direct imports in case future files are too large or cumbersome for rudimentary processing.
+An overview of results/improvements:
+- Methods to reduce operating costs across the entire organization.
+- Ways to drive sales higher on both popular and non-popular projects.
+- Better identification of customer segments to improve marketing for.
 
 ## Cleaning & Importing
 
