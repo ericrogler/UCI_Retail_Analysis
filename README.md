@@ -204,7 +204,7 @@ I prioritize making *views* over tables for several reasons:
 2. Can be cached and act as a subset of data for referencing later
 3. Security to allow other users to only access the parts of data I'm fine with them accessing
 
-For example, if I want a view for product performance across *all* of my products, I take the CTE from my Top 10 Products analysis query to find the and set it up like this:
+For example, if I want a view for product performance across *all* of my products, I take the CTE from my Top 10 Products analysis query and set it up like this:
 
 ```sql
 CREATE OR REPLACE VIEW product_sales AS
