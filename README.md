@@ -1,9 +1,8 @@
 # Retail Revenue & Customer Analytics
 
 Author: Eric Rogler
-Publish Date: October 22, 2026
 
-
+Original Publish Date: October 22, 2026
 
 The data comes from the UCI Online Retail dataset. Reference here:
 
